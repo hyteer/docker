@@ -1,7 +1,7 @@
 version: '2'
 services:
     nginx:
-        image: "${DOCKER_USER}/lnmp-nginx:v1.2"
+        image: "yt/lnmp:nginx"
         build:
             context: .
             dockerfile: Dockerfile.nginx
@@ -12,7 +12,7 @@ services:
         depends_on:
             - php
     php:
-        image: "${DOCKER_USER}/lnmp-php:v1.2"
+        image: "yt/lnmp:php"
         build:
             context: .
             dockerfile: Dockerfile.php
@@ -25,6 +25,8 @@ services:
             - mysql
     mysql:
         image: mysql:5.7
+        ports:
+            - "3306:3306"
         volumes:
             - mysql-data:/var/lib/mysql
         environment:

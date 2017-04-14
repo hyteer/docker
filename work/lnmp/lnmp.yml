@@ -1,0 +1,47 @@
+version: '3'
+services:
+    nginx:
+        image: "yt/lnmp:nginx"
+        ports:
+            - "80:80"
+        #networks:
+        #    - frontend
+        depends_on:
+            - php
+        deploy:
+          replicas: 2
+          restart_policy:
+            condition: on-failure
+    php:
+        image: "yt/lnmp:php"
+        #networks:
+        #    - frontend
+        #    - backend
+        environment:
+            MYSQL_PASSWORD: 111
+        depends_on:
+            - mysql
+        deploy:
+          replicas: 1
+          restart_policy:
+            condition: on-failure
+    mysql:
+        image: mysql:5.7
+        ports:
+            - "3306:3306"
+        volumes:
+            - mysql-data:/var/lib/mysql
+        environment:
+            TZ: 'Asia/Shanghai'
+            MYSQL_ROOT_PASSWORD: 111
+        command: ['mysqld', '--character-set-server=utf8']
+        #networks:
+        #    - backend
+        deploy:
+          replicas: 1
+          restart_policy:
+            condition: on-failure
+volumes:
+    mysql-data:
+
+

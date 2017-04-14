@@ -41,3 +41,4 @@ RUN set -xe \
 
 COPY ./php.conf /usr/local/etc/php/conf.d/php.conf
 COPY ./site /usr/share/nginx/html
+#COPY ./site /var/www/html
