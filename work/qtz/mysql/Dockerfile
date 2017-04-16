@@ -12,6 +12,7 @@ ENV SOFT_PATH="${INSTALL_PATH}/soft" \
 # 下载解压
 RUN echo "${RES_IP} ${RES_DOMAIN}" >> /etc/hosts && \
     yum install cmake -y && \
+    yum clean all && \
     wget -P ${SOFT_PATH} http://${RES_DOMAIN}/${MYSQL_PACKAGE}
 WORKDIR ${SOFT_PATH}
 RUN groupadd -r mysql && \
