@@ -2,43 +2,13 @@ FROM qtz/base
 ENV BASE_DIR="/data" \
     HOSTIP="10.100.100.31" \
     HOSTNAME="downloads.vikduo.com" \
-    NGINX_VERSION="nginx-1.7.9" \
     PHP_VERSION="php-5.6.3"
 ENV SOFT_PATH="${BASE_DIR}/soft" \
-    APP_PATH="${BASE_DIR}/apps" \
-    WEB_PATH="${BASE_DIR}/www" \
-    NGINX_PACKAGE="${NGINX_VERSION}.tar.gz" \
     PHP_PACKAGE="${PHP_VERSION}.tar.gz"
 RUN mkdir ${BASE_DIR} && \
-    mkdir -p ${APP_PATH}/nginx && \
-    cd ${BASE_DIR} && \
     groupadd nginx && \
-    useradd -g nginx nginx -s /sbin/nologinmake
-RUN yum install pcre pcre-devel -y && \
-    yum clean all
+    useradd -g nginx nginx -s /sbin/nologin
 
-# Install Nginx
-WORKDIR ${SOFT_PATH}
-# RUN wget http://nginx.org/download/${NGINX_PACKAGE} && \
-RUN echo $HOSTIP $HOSTNAME>>/etc/hosts; \
-    wget http://${HOSTNAME}/${NGINX_PACKAGE} && \
-    tar zxvf ${NGINX_PACKAGE} && \
-    cd ${NGINX_VERSION} && \ 
-    ./configure \
-    --prefix=${APP_PATH}/nginx \
-    --with-cc-opt=-O3 \
-    --user=nginx \
-    --group=nginx \
-    --with-cpu-opt=intel \
-    --with-http_stub_status_module \
-    --with-http_ssl_module \
-    --with-http_realip_module && \
-    make && make install && \
-    mv ${APP_PATH}/nginx/conf/nginx.conf ${APP_PATH}/nginx/conf/nginx.conf.default && \
-    mkdir -p ${WEB_PATH} && \
-    chown -R nginx:nginx ${WEB_PATH} && \
-    rm -rf ${SOFT_PATH}/*
-COPY nginx.conf ${APP_PATH}/nginx/conf/
 # Install PHP
 WORKDIR ${SOFT_PATH}
 RUN yum install libxml2-devel bzip2-devel libcurl-devel libjpeg-devel libpng-devel freetype-devel -y && \
@@ -80,6 +50,7 @@ RUN echo $HOSTIP $HOSTNAME>>/etc/hosts; \
     cp ${SOFT_PATH}/${PHP_VERSION}/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && \
     chmod 755 /etc/init.d/php-fpm && \
     rm -rf ${SOFT_PATH}/*
+
 RUN echo $HOSTIP $HOSTNAME>>/etc/hosts; \
     wget -P /etc http://${HOSTNAME}/PhpConf/php.ini && \
     wget -P /etc http://${HOSTNAME}/PhpConf/php-fpm.conf && \
@@ -89,9 +60,4 @@ RUN echo $HOSTIP $HOSTNAME>>/etc/hosts; \
     /etc/init.d/php-fpm start && \
     netstat -ntlp | grep php-fpm && \
     echo "export PATH=\$PATH:${BASE_DIR}/php/bin" > /etc/profile.d/php.sh;. /etc/profile.d/php.sh
-COPY start.sh ${BASE_DIR}
-ADD www ${BASE_DIR}/www
-RUN chown nginx:nginx ${BASE_DIR}/www && \
-    chmod +x ${BASE_DIR}/start.sh
 # END
-CMD ${BASE_DIR}/start.sh
