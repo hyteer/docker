@@ -60,32 +60,4 @@ RUN echo $HOSTIP $HOSTNAME>>/etc/hosts; \
     /etc/init.d/php-fpm start && \
     netstat -ntlp | grep php-fpm && \
     echo "export PATH=\$PATH:${BASE_DIR}/php/bin" > /etc/profile.d/php.sh;. /etc/profile.d/php.sh
-
-# 安装PHP扩展
-ADD http://${HOSTNAME}/${PHP_PACKAGE} ${SOFT_PATH}
-RUN cd ${SOFT_PATH} && \
-    tar -zxvf ${PHP_PACKAGE} && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/pcntl && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/sysvmsg && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/sysvsem && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/sysvshm && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/bcmath && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    rm -rf ${SOFT_PATH}/*
-
-
 # END
