@@ -4,7 +4,11 @@ ENV BASE_DIR="/data" \
     HOSTNAME="downloads.vikduo.com" \
     PHP_VERSION="php-5.6.3"
 ENV SOFT_PATH="${BASE_DIR}/soft" \
-    PHP_PACKAGE="${PHP_VERSION}.tar.gz"
+    PHP_PACKAGE="${PHP_VERSION}.tar.gz" \
+    PHP_PATH="${BASE_DIR}/php" \
+    LIBEVENT_PATH="${BASE_DIR}/libevent" \
+    MEMCACHED_PATH="${BASE_DIR}/memcached" \
+    LIBMCRYPT_PATH="${BASE_DIR}/libmcrypt"
 RUN mkdir ${BASE_DIR} && \
     groupadd nginx && \
     useradd -g nginx nginx -s /sbin/nologin
@@ -61,31 +65,45 @@ RUN echo $HOSTIP $HOSTNAME>>/etc/hosts; \
     netstat -ntlp | grep php-fpm && \
     echo "export PATH=\$PATH:${BASE_DIR}/php/bin" > /etc/profile.d/php.sh;. /etc/profile.d/php.sh
 
-# 安装PHP扩展
+## 安装PHP扩展
 ADD http://${HOSTNAME}/${PHP_PACKAGE} ${SOFT_PATH}
-RUN cd ${SOFT_PATH} && \
-    tar -zxvf ${PHP_PACKAGE} && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/pcntl && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/sysvmsg && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/sysvsem && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/sysvshm && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    cd ${SOFT_PATH}/${PHP_VERSION}/ext/bcmath && \
-    /data/php/bin/phpize ./ && \
-    ./configure --with-php-config=${BASE_DIR}/php/bin/php-config && \
-    make && make install && \
-    rm -rf ${SOFT_PATH}/*
+COPY extensions/no-debug-non-zts-20131226 ${BASE_DIR}/php/lib/php/extensions/no-debug-non-zts-20131226
+RUN echo "extension=memcache.so" >> /etc/php.ini && \
+    echo "extension=mongodb.so" >> /etc/php.ini && \
+    echo "extension=pcntl.so" >> /etc/php.ini && \
+    echo "extension=rdkafka.so" >> /etc/php.ini && \
+    echo "extension=redis.so" >> /etc/php.ini && \
+    echo "extension=swoole.so" >> /etc/php.ini && \
+    echo "extension=sysvmsg.so" >> /etc/php.ini && \
+    echo "extension=sysvsem.so" >> /etc/php.ini && \
+    echo "extension=sysvshm.so" >> /etc/php.ini && \
+    echo "extension=libevent.so" >> /etc/php.ini && \
+    echo "extension=bcmath.so" >> /etc/php.ini && \
+    curl -Ss http://www.workerman.net/check.php | ${BASE_DIR}/php/bin/php
 
+# 安装libevent
+WORKDIR ${SOFT_PATH}
+RUN echo ${HOSTIP} ${HOSTNAME}>>/etc/hosts && \
+    wget http://${HOSTNAME}/libevent-2.0.21-stable.tar.gz && \
+    wait && \
+    tar xzf libevent-2.0.21-stable.tar.gz && \
+    ./configure --prefix=${LIBEVENT_PATH} && \
+    make && make install
+
+# 安装memcached
+WORKDIR ${SOFT_PATH}
+RUN echo $HOSTIP $HOSTNAME>>/etc/hosts && \
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/memcached-1.4.33.tar.gz && \
+    wait && \
+    tar xzf memcached-1.4.33.tar.gz && \
+    cd memcached-1.4.33 && \
+    ${BASE_DIR}/php/bin/phpize && \
+    ./configure --prefix=${MEMCACHED_PATH} --with-libevent=${LIBEVENT_PATH} && \
+    make && make install && \
+    sed -i '865i\extension=memcache.so' /etc/php.ini && \
+    ${MEMCACHED_PATH}/bin/memcached -d -m 1024 -u root -p 11211 -c 256 -P /tmp/memcached.pid && \
+    echo "${MEMCACHED_PATH}/bin/memcached -d -m 1024 -u root -p 11211 -c 2048 -P /tmp/memcached.pid" >> /etc/rc.local
+
+# 安装 libevent
 
 # END
