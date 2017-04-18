@@ -1,0 +1,45 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "service-pay",
+  "server": true,
+"services": [
+        {
+                "id": "ShoppingCart0",
+                "name": "ShoppingCart",
+                "tags": ["Test"],
+                "port": 9099
+        },
+        {
+                "id": "Sms0",
+                "name": "Sms",
+                "tags": ["Test"],
+                "port": 9100
+        },
+        {
+                "id": "Statistics0",
+                "name": "Statistics",
+                "tags": ["Test"],
+                "port": 9101
+        },
+        {
+                "id": "ThirdParty0",
+                "name": "ThirdParty",
+                "tags": ["Test"],
+                "port": 9102
+        },
+        {
+                "id": "ThirdPartyInterface0",
+                "name": "ThirdPartyInterface",
+                "tags": ["Test"],
+                "port": 9103
+        },
+        {
+                "id": "Users0",
+                "name": "Users",
+                "tags": ["Test"],
+                "port": 9104
+        }
+]
+}

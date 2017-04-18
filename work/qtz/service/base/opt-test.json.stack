@@ -1,0 +1,57 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "service-base",
+  "server": true,
+"services": [
+        {
+                "id": "Base0",
+                "name": "Base",
+                "tags": ["Test"],
+                "port": 9091
+        },
+        {
+                "id": "Merchant0",
+                "name": "Merchant",
+                "tags": ["Test"],
+                "port": 9092
+        },
+        {
+                "id": "Message0",
+                "name": "Message",
+                "tags": ["Test"],
+                "port": 9093
+        },
+        {
+                "id": "Order0",
+                "name": "Order",
+                "tags": ["Test"],
+                "port": 9094
+        },
+        {
+                "id": "Pay0",
+                "name": "Pay",
+                "tags": ["Test"],
+                "port": 9095
+        },
+        {
+                "id": "Product0",
+                "name": "Product",
+                "tags": ["Test"],
+                "port": 9096
+        },
+        {
+                "id": "Qrcode0",
+                "name": "Qrcode",
+                "tags": ["Test"],
+                "port": 9097
+        },
+        {
+                "id": "Shop0",
+                "name": "Shop",
+                "tags": ["Test"],
+                "port": 9098
+        }
+]
+}

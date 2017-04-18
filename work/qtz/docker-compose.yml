@@ -1,0 +1,33 @@
+version: '2'
+services:
+    webgate:
+        image: "qtz/webgate"
+        build:
+            context: ./webgate
+            dockerfile: Dockerfile
+        ports:
+            - "80:80"
+        networks:
+            - qtz
+    srv-base:
+        image: "qtz/srv-base"
+        build:
+            context: ./service/base
+            dockerfile: Dockerfile
+        networks:
+            - qtz
+        depends_on:
+            - webgate
+    redis:
+        image: qtz/
+        ports:
+            - "6379:6379"
+        command: ['mysqld', '--character-set-server=utf8']
+        networks:
+            - qtz
+volumes:
+    mysql-data:
+
+networks:
+    frontend:
+    backend:

@@ -8,14 +8,21 @@ ENV SOFT_PATH="${BASE_DIR}/soft" \
     PHP_PATH="${BASE_DIR}/php" \
     LIBEVENT_PATH="${BASE_DIR}/libevent" \
     MEMCACHED_PATH="${BASE_DIR}/memcached" \
-    LIBMCRYPT_PATH="${BASE_DIR}/libmcrypt"
+    LIBMCRYPT_PATH="${BASE_DIR}/libmcrypt" \
+    # Thrift
+    AUTOCONF_VERSION="autoconf-2.69.tar.gz" \
+    AUTOMAKE_VERSION="automake-1.14.tar.gz" \
+    BISON_VERSION="bison-2.5.1.tar.gz" \
+    THRIFT_VERSION="thrift-0.9.3.tar.gz" \
+    THRIFT_PATH="${BASE_DIR}/thrift"
+
 RUN mkdir ${BASE_DIR} && \
     groupadd nginx && \
     useradd -g nginx nginx -s /sbin/nologin
 
 # Install PHP
 WORKDIR ${SOFT_PATH}
-RUN yum install libxml2-devel bzip2-devel libcurl-devel libjpeg-devel libpng-devel freetype-devel -y && \
+RUN yum install libxml2-devel bzip2-devel libcurl-devel libjpeg-devel libpng-devel freetype-devel unzip -y && \
     yum clean all
 RUN echo $HOSTIP $HOSTNAME>>/etc/hosts; \
     wget -P ${SOFT_PATH} http://${HOSTNAME}/${PHP_PACKAGE} && \
@@ -87,6 +94,7 @@ RUN echo ${HOSTIP} ${HOSTNAME}>>/etc/hosts && \
     wget http://${HOSTNAME}/libevent-2.0.21-stable.tar.gz && \
     wait && \
     tar xzf libevent-2.0.21-stable.tar.gz && \
+    cd libevent-2.0.21-stable && \
     ./configure --prefix=${LIBEVENT_PATH} && \
     make && make install
 
@@ -97,13 +105,86 @@ RUN echo $HOSTIP $HOSTNAME>>/etc/hosts && \
     wait && \
     tar xzf memcached-1.4.33.tar.gz && \
     cd memcached-1.4.33 && \
-    ${BASE_DIR}/php/bin/phpize && \
+    pwd && ls && \
+#    ${BASE_DIR}/php/bin/phpize ./ && \
     ./configure --prefix=${MEMCACHED_PATH} --with-libevent=${LIBEVENT_PATH} && \
     make && make install && \
     sed -i '865i\extension=memcache.so' /etc/php.ini && \
     ${MEMCACHED_PATH}/bin/memcached -d -m 1024 -u root -p 11211 -c 256 -P /tmp/memcached.pid && \
-    echo "${MEMCACHED_PATH}/bin/memcached -d -m 1024 -u root -p 11211 -c 2048 -P /tmp/memcached.pid" >> /etc/rc.local
+    echo "${MEMCACHED_PATH}/bin/memcached -d -m 1024 -u root -p 11211 -c 2048 -P /tmp/memcached.pid" >> /etc/rc.local && \
+    rm -rf ${SOFT_PATH}/*
 
-# 安装 libevent
+# 安装memcache 
+WORKDIR ${SOFT_PATH}
+RUN echo $HOSTIP $HOSTNAME>>/etc/hosts && \
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/memcache-2.2.7.tgz && \
+    wait && \
+    tar xzf memcache-2.2.7.tgz && \
+    cd memcache-2.2.7 && \
+    ${PHP_PATH}/bin/phpize && \
+    ./configure --enable-memcache --with-php-config=${PHP_PATH}/bin/php-config --with-zlib-dir && \
+    make && make install && \
+    sed -i '865i\extension=memcache.so' /etc/php.ini && \
+    rm -rf ${SOFT_PATH}/*
 
+# 安装librdkafka
+WORKDIR ${SOFT_PATH}
+RUN echo $HOSTIP $HOSTNAME>>/etc/hosts && \
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/librdkafka-master.zip && \
+    wait && \
+    unzip librdkafka-master.zip && \
+    cd librdkafka-master && \
+    ./configure --prefix=/data/librdkafka-master && \
+    make && make install && \
+    rm -rf ${SOFT_PATH}/*
+
+# 安装consul
+WORKDIR ${SOFT_PATH}
+RUN echo $HOSTIP $HOSTNAME>>/etc/hosts && \
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/consul_0.7.2_linux_amd64.zip && \
+    wait && \
+    unzip consul_0.7.2_linux_amd64.zip && \
+    mv consul /usr/local/sbin && \
+    chmod 755 /usr/local/sbin/consul && \
+    cd /etc && mkdir consul.d && \
+    rm -rf ${SOFT_PATH}/*
+
+# 安装Thrift
+WORKDIR ${SOFT_PATH}
+RUN echo $HOSTIP $HOSTNAME>>/etc/hosts && \
+    # autoconf
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/thrift/${AUTOCONF_VERSION} && \
+    tar xzf ${AUTOCONF_VERSION} && \
+    source_dir=`echo ${AUTOCONF_VERSION} | sed -e 's/.tar.gz//g'` && \    
+    cd ${source_dir} && \
+    ./configure --prefix=/usr && \
+    make && make install && cd .. && \
+    # automake
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/thrift/${AUTOMAKE_VERSION} && \
+    tar xzf ${AUTOMAKE_VERSION} && \
+    source_dir=`echo ${AUTOMAKE_VERSION} | sed -e 's/.tar.gz//g'` && \
+    cd ${source_dir} && \
+    ./configure --prefix=/usr && \
+    make && make install && cd .. && \
+    # bison
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/thrift/${BISON_VERSION} && \
+    tar xzf ${BISON_VERSION} && \
+    source_dir=`echo ${BISON_VERSION} | sed -e 's/.tar.gz//g'` && \
+    cd ${source_dir} && \
+    ./configure --prefix=/usr && \
+    make && make install && cd .. && \
+    # thrift
+    source /etc/profile.d/php.sh && \
+    wget -P ${SOFT_PATH} http://${HOSTNAME}/thrift/${THRIFT_VERSION} && \
+    tar xzf ${THRIFT_VERSION} && \
+    source_dir=`echo ${THRIFT_VERSION} | sed -e 's/.tar.gz//g'` && \
+    cd ${source_dir} && \
+    ./configure --prefix=${THRIFT_PATH} --with-php=yes --with-cpp=no --with-lua=no && \
+    make && make install && cd .. && \
+    echo "export PATH=${thriftInstallPath}/bin:\$PATH" >> /etc/profile.d/thrift.sh && \
+    source /etc/profile.d/thrift.sh && \
+    rm -rf ${SOFT_PATH}/*
+
+# consul集群配置
+# COPY conf/opt-test.json.base /etc/consul.d/opt-test.json    
 # END
