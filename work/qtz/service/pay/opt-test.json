@@ -4,7 +4,7 @@
   "log_level": "INFO",
   "node_name": "service-pay",
   "server": true,
-"services": [
+  "services": [
         {
                 "id": "ShoppingCart0",
                 "name": "ShoppingCart",
@@ -41,5 +41,5 @@
                 "tags": ["Test"],
                 "port": 9104
         }
-]
+  ]
 }

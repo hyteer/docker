@@ -1,19 +1,19 @@
 version: '2'
 services:
     webgate:
-        image: "qtz/base"
-        build:
-            context: ./webgate
-            dockerfile: Dockerfile
+        image: "qtz/gateway"
         ports:
             - "80:80"
         networks:
             - qtz
     srv-base:
-        image: "qtz/php"
-        build:
-            context: ./service/base
-            dockerfile: Dockerfile
+        image: "qtz/srv-base"
+        networks:
+            - qtz
+        depends_on:
+            - webgate
+    srv-pay:
+        image: "qtz/srv-pay"
         networks:
             - qtz
         depends_on:

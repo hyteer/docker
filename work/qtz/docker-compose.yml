@@ -1,19 +1,19 @@
 version: '2'
 services:
     webgate:
-        image: "qtz/webgate:1.0"
+        image: "qtz/gateway"
         ports:
             - "80:80"
         networks:
             - qtz
     srv-base:
-        image: "qtz/srv-base-c"
+        image: "qtz/srv-base"
         networks:
             - qtz
         depends_on:
             - webgate
     srv-pay:
-        image: "qtz/srv-pay-c"
+        image: "qtz/srv-pay"
         networks:
             - qtz
         depends_on:
