@@ -1,8 +1,8 @@
 FROM qtz/php
-RUN mkdir /start
+RUN mkdir /scripts
 COPY opt-test.json /etc/consul.d/opt-test.json
-ADD start /start
-RUN chmod +x /start/*
-CMD /start/start.sh
+ADD scripts /scripts
+RUN chmod +x /scripts/* && /scripts/deploy.sh
+CMD /scripts/start.sh
 
 

@@ -1,13 +1,16 @@
 FROM qtz/php
-RUN mkdir /start && \
-    mkdir /data/www && \
-    chmod +x /start/* && \
-    chown nginx:nginx /data/www
 #
+ENV BASE="/data" 
+ENV WEB_PATH="${BASE}/www"
+
 COPY opt-test.json /etc/consul.d/opt-test.json
-ADD _code_ /data/www
-# Start
-ADD start /start
-CMD /start/start.sh
+ADD _code_/www ${WEB_PATH}
+# deploy
+RUN mkdir /scripts
+ADD scripts /scripts
+RUN chmod +x /scripts/* && /scripts/deploy.sh
+# start
+CMD /scripts/start.sh
+
 
 

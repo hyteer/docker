@@ -1,26 +1,15 @@
 #!/bin/bash
-echo "开始部署......"
+echo "开始部署服务......"
 BASE="/data"
 WEB_PATH="${BASE}/www"
 PHP_PATH="/data/php"
 THRIFT_PATH="/data/thrift"
 REDIS="10.20.60.3"
 
-function make_soft_link() {
-    cd ${WEB_PATH}
-    ln -s gateway-app-salesman appdt.testopt.snsshop.net
-    ln -s gateway-app-merchant appmc.testopt.snsshop.net
-    ln -s gateway-boss boss.testopt.snsshop.net
-    ln -s gateway-h5-rest-shop merc.testmopt.snsshop.net
-    ln -s gateway-h5-pay pay.testmopt.snsshop.net
-    ln -s gateway-qrcode qr.testmopt.snsshop.net
-    ln -s frontend-h5-rest-shop \*.testmopt.snsshop.net
-    ln -s gateway-h5-ucenter user.testmopt.snsshop.net
-}
 
-function deploy_gateway_qrcode() {
-    echo "==部署二维码网关=="
-    cd gateway-qrcode
+function deploy_service_base() {
+    echo "==部署service-base=="
+    cd ${WEB_PATH}/service-base
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
     mkdir ./runtime/debug && mkdir ./runtime/logs
@@ -43,9 +32,9 @@ function deploy_gateway_qrcode() {
 } 
 
 
-function deploy_gateway_apps_salesman() {
-    echo "==部署app-salesman网关=="
-    cd ${WEB_PATH}/gateway-app-salesman
+function deploy_service_merchant() {
+    echo "==部署service-merchant=="
+    cd ${WEB_PATH}/service-merchant
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
     mkdir ./runtime/debug && mkdir ./runtime/logs
@@ -63,9 +52,9 @@ function deploy_gateway_apps_salesman() {
     done
 }
 
-function deploy_gateway_apps_merchant() {
-    echo "==部署gateway-app-merchant=="
-    cd ${WEB_PATH}/gateway-app-merchant
+function deploy_service_message () {
+    echo "==部署service-message=="
+    cd ${WEB_PATH}/service-message
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
     mkdir ./runtime/debug && mkdir ./runtime/logs
@@ -83,9 +72,9 @@ function deploy_gateway_apps_merchant() {
     done
 }
 
-function deploy_gateway_boss() {
+function deploy_service_order () {
     echo "==部署boss关=="
-    cd ${WEB_PATH}/gateway-boss
+    cd ${WEB_PATH}/service-order
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     mkdir ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
@@ -102,9 +91,9 @@ function deploy_gateway_boss() {
     done
 }
 
-function deploy_gateway_h5_rest_shop() {
-    echo "==部署gateway-h5-rest-shop=="
-    cd ${WEB_PATH}/gateway-h5-rest-shop
+function deploy_service_pay () {
+    echo "==部署service-pay=="
+    cd ${WEB_PATH}/service-pay
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     mkdir ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
@@ -121,9 +110,9 @@ function deploy_gateway_h5_rest_shop() {
     done
 }
 
-function deploy_gateway_h5_pay() {
-    echo "==部署gateway-h5-pay=="
-    cd ${WEB_PATH}/gateway-h5-pay
+function deploy_service_product () {
+    echo "==部署service-product=="
+    cd ${WEB_PATH}/service-product
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     mkdir ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
@@ -140,9 +129,9 @@ function deploy_gateway_h5_pay() {
     done
 }
 
-function deploy_gateway_h5_ucenter() {
-    echo "==部署gateway-h5-ucenter=="
-    cd ${WEB_PATH}/gateway-h5-ucenter
+function deploy_service_qrcode () {
+    echo "==部署service-qrcode=="
+    cd ${WEB_PATH}/service-qrcode
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     mkdir ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
@@ -159,27 +148,34 @@ function deploy_gateway_h5_ucenter() {
     done
 }
 
-function deploy_gateway_go() {
-    echo "==部署Go网关=="
-    cd ${BASE}/go_gateway
-    chmod +x go_gateway *.sh
-    #${BASE}/go_gateway/go_gateway -config_file gateway.json &
-    #nohup /data/go_gateway/go_gateway -config_file gateway.json &
-    #ls /scripts
-    #/scripts/wait-for-it.sh -t 5 localhost:8080
-    #cat nohup.out
-    cd /data
+function deploy_service_shop () {
+    echo "==部署service-shop=="
+    cd ${WEB_PATH}/service-shop
+    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
+    mkdir ./runtime/debug && mkdir ./runtime/logs
+    chown -R nginx:nginx ./runtime
+    # 生成thrift code
+    echo "生成thrift code..."
+    for file in ./thriftFiles/*.thrift
+    do
+        if test -f ${file}
+        then
+            ${THRIFT_PATH}/bin/thrift -out . --gen php:server ${file}
+        else
+            echo "${file} is not a file..."
+        fi
+    done
 }
 
 
-make_soft_link
-deploy_gateway_qrcode
-deploy_gateway_apps_salesman
-deploy_gateway_boss
-deploy_gateway_h5_rest_shop
-deploy_gateway_h5_pay
-deploy_gateway_h5_ucenter
-#deploy_gateway_go
+deploy_service_base
+deploy_service_merchant
+deploy_service_message
+deploy_service_order
+deploy_service_pay
+deploy_service_product
+deploy_service_qrcode
+deploy_service_shop
 
 
 echo "部署完成..."

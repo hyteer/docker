@@ -230,8 +230,8 @@ RUN echo "配置..." && \
     mkdir -p ${WEB_PATH} && \
     mkdir /test && mkdir /run && \
     chown nginx:nginx ${WEB_PATH}
-ADD _code_/frontend-h5-rest-shop ${BASE_DIR}/www
-ADD _code_/gateway-qrcode ${BASE_DIR}/www/gateway-qrcode
+ADD _code_/www ${BASE_DIR}/www
+#ADD _code_/gateway-qrcode ${BASE_DIR}/www/gateway-qrcode
 ADD _code_/go_gateway /data/go_gateway
 #ADD www ${BASE_DIR}/www
 ADD vhost ${NGINX_PATH}/conf/vhost
