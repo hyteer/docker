@@ -185,6 +185,9 @@ RUN echo $HOSTIP $HOSTNAME>>/etc/hosts && \
     source /etc/profile.d/thrift.sh && \
     rm -rf ${SOFT_PATH}/*
 
+# 其它配置
+RUN mkdir -p ${BASE_DIR}/www && \
+    chown nginx:nginx ${BASE_DIR}/www
 # consul集群配置
 # COPY conf/opt-test.json.base /etc/consul.d/opt-test.json    
 # END

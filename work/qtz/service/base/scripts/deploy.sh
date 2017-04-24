@@ -3,6 +3,7 @@ echo "开始部署服务......"
 BASE="/data"
 WEB_PATH="${BASE}/www"
 PHP_PATH="/data/php"
+PHP="${PHP_PATH}/bin/php"
 THRIFT_PATH="/data/thrift"
 REDIS="10.20.60.3"
 
@@ -10,9 +11,9 @@ REDIS="10.20.60.3"
 function deploy_service_base() {
     echo "==部署service-base=="
     cd ${WEB_PATH}/service-base
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
+    ${PHP} init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -27,17 +28,17 @@ function deploy_service_base() {
     done
     # 启动服务
     echo "启动服务..."
-    ${PHP_PATH}/bin/php start.php start -d
-    ${PHP_PATH}/bin/php start.php status
+    ${PHP} start.php start -d
+    ${PHP} start.php status
 } 
 
 
 function deploy_service_merchant() {
     echo "==部署service-merchant=="
     cd ${WEB_PATH}/service-merchant
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
+    ${PHP} init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -55,9 +56,9 @@ function deploy_service_merchant() {
 function deploy_service_message () {
     echo "==部署service-message=="
     cd ${WEB_PATH}/service-message
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
+    ${PHP} init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -75,8 +76,8 @@ function deploy_service_message () {
 function deploy_service_order () {
     echo "==部署boss关=="
     cd ${WEB_PATH}/service-order
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    ${PHP} init --env=Test --overwrite=All
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -94,8 +95,8 @@ function deploy_service_order () {
 function deploy_service_pay () {
     echo "==部署service-pay=="
     cd ${WEB_PATH}/service-pay
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    ${PHP} init --env=Test --overwrite=All
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -113,8 +114,8 @@ function deploy_service_pay () {
 function deploy_service_product () {
     echo "==部署service-product=="
     cd ${WEB_PATH}/service-product
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    ${PHP} init --env=Test --overwrite=All
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -132,8 +133,8 @@ function deploy_service_product () {
 function deploy_service_qrcode () {
     echo "==部署service-qrcode=="
     cd ${WEB_PATH}/service-qrcode
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    ${PHP} init --env=Test --overwrite=All
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -151,8 +152,8 @@ function deploy_service_qrcode () {
 function deploy_service_shop () {
     echo "==部署service-shop=="
     cd ${WEB_PATH}/service-shop
-    ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    ${PHP} init --env=Test --overwrite=All
+    mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."

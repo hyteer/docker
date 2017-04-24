@@ -162,7 +162,7 @@ function deploy_gateway_h5_ucenter() {
 function deploy_gateway_go() {
     echo "==部署Go网关=="
     cd ${BASE}/go_gateway
-    chmod +x go_gateway *.sh
+    chmod +x go_gateway *.sh gateway.json
     #${BASE}/go_gateway/go_gateway -config_file gateway.json &
     #nohup /data/go_gateway/go_gateway -config_file gateway.json &
     #ls /scripts
@@ -179,7 +179,7 @@ deploy_gateway_boss
 deploy_gateway_h5_rest_shop
 deploy_gateway_h5_pay
 deploy_gateway_h5_ucenter
-#deploy_gateway_go
+deploy_gateway_go
 
 
 echo "部署完成..."

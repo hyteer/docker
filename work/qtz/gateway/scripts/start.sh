@@ -2,8 +2,9 @@
 BASE="/data"
 WEB_PATH="/data/www"
 PHP_PATH="${PHP_PATH}"
-PHP="${PHP}"
+PHP="${PHP_PATH}/bin/php"
 GO_PATH="${BASE}/go_gateway"
+CONSUL="/usr/local/sbin/consul"
 
 ## start php
 echo "启动php-fpm..."
@@ -44,26 +45,27 @@ function start_services () {
 	cd ${WEB_PATH}/gateway-h5-ucenter
 	${PHP} start.php start -d
 	# gateway_go
-	echo "启动gateway-go..."
-	${GO_PATH}/go_gateway -config_file ${GO_PATH}/gateway.json
+	#echo "启动gateway-go..."
+	#${GO_PATH}/go_gateway -config_file ${GO_PATH}/gateway.json
 }
 
 function deploy_gateway_go() {
     echo "==部署Go网关=="
-    cd ${BASE}/go_gateway
+    cd ${GO_PATH}
     chmod +x go_gateway *.sh *.json
     nohup ${GO_PATH}/go_gateway -config_file gateway.json &
     #nohup /data/go_gateway/go_gateway -config_file gateway.json &
     #ls /scripts
     #/scripts/wait-for-it.sh -t 5 localhost:8080
     #cat nohup.out
-    cd /data
+    cd ${BASE}
 }
 
 
 start_services
 deploy_gateway_go
 
+consul members
 /usr/local/sbin/consul monitor
 
 

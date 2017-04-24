@@ -2,7 +2,7 @@
   "datacenter": "opt-test",
   "data_dir": "/tmp/consul",
   "log_level": "INFO",
-  "node_name": "service-base",
+  "node_name": "service-1",
   "server": true,
 "services": [
         {
