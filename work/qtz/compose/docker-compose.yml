@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
     gateway:
         image: "qtz/gateway"
@@ -7,13 +7,13 @@ services:
         networks:
             - qtz
     srv1:
-        image: "qtz-c/srv1"
+        image: "qtz-c/srv1:0.1"
         networks:
             - qtz
         depends_on:
             - gateway
     srv2:
-        image: "qtz-c/srv2"
+        image: "qtz-c/srv2:0.1"
         networks:
             - qtz
         depends_on:

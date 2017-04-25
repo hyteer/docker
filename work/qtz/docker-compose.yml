@@ -1,23 +1,23 @@
 version: '2'
 services:
-    webgate:
+    gateway:
         image: "qtz/gateway"
         ports:
             - "80:80"
         networks:
             - qtz
-    srv-base:
-        image: "qtz/srv-base"
+    srv1:
+        image: "qtz-c/srv1"
         networks:
             - qtz
         depends_on:
-            - webgate
-    srv-pay:
-        image: "qtz/srv-pay"
+            - gateway
+    srv2:
+        image: "qtz-c/srv2"
         networks:
             - qtz
         depends_on:
-            - webgate
+            - gateway
 #    redis:
 #        image: qtz/
 #        ports:

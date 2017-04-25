@@ -1,21 +1,21 @@
 version: '3'
 services:
     gateway:
-        image: "qtz/gateway"
+        image: "sctek:5000/qtz-gateway"
         ports:
             - "80:80"
         networks:
-            - qtz
+            - qtzstack
     srv1:
-        image: "qtz-c/srv1"
+        image: "sctek:5000/qtz-srv1"
         networks:
-            - qtz
+            - qtzstack
         depends_on:
             - gateway
     srv2:
-        image: "qtz-c/srv2"
+        image: "sctek:5000/qtz-srv2"
         networks:
-            - qtz
+            - qtzstack
         depends_on:
             - gateway
 #    redis:
@@ -29,4 +29,4 @@ services:
 #    mysql-data:
 
 networks:
-    qtz:
+    qtzstack:

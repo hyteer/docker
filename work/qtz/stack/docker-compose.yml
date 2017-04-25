@@ -4,18 +4,18 @@ services:
         image: "qtz/gateway"
         ports:
             - "80:80"
-        networks:
-            - qtz
+#        networks:
+#            - qtz1
     srv1:
-        image: "qtz-c/srv1"
-        networks:
-            - qtz
+        image: "qtz-c/srv1:0.1"
+#        networks:
+#            - qtz1
         depends_on:
             - gateway
     srv2:
-        image: "qtz-c/srv2"
-        networks:
-            - qtz
+        image: "qtz-c/srv2:0.1"
+#        networks:
+#            - qtz1
         depends_on:
             - gateway
 #    redis:
@@ -28,5 +28,5 @@ services:
 #volumes:
 #    mysql-data:
 
-networks:
-    qtz:
+#networks:
+#    qtz1:
