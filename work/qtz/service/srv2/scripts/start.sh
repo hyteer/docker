@@ -19,18 +19,22 @@ function start_services () {
 	echo "启动service-shopping-cart..."
 	cd ${WEB_PATH}/service-shopping-cart
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service-third-party
 	echo "启动service-third-party..."
 	cd ${WEB_PATH}/service-third-party
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service-third-party-interface
 	echo "启动service-third-party-interface..."
 	cd ${WEB_PATH}/service-third-party-interface
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service-user
 	echo "启动service-user..."
 	cd ${WEB_PATH}/service-user
 	${PHP} start.php start -d
+	${PHP} start.php status
 
 
 }

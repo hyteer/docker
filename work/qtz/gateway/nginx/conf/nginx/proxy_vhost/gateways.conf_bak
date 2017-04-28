@@ -1,0 +1,109 @@
+
+upstream gate-pay {
+        server gate-pay:80;
+    }
+
+upstream gate-go {
+        server gate-go:8080;
+    }
+
+
+server {
+    listen 80;
+    server_name go.testmopt.snsshop.net;
+
+    error_log logs/go.testmopt.snsshop.net.error.log;
+    access_log logs/go.testmopt.snsshop.net.access.log;
+    location / {
+            proxy_pass http://gate-go;
+            proxy_redirect off ;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+}
+
+
+server {
+    listen 80;
+    server_name qr.testmopt.snsshop.net;
+
+    error_log logs/go.testmopt.snsshop.net.error.log;
+    access_log logs/go.testmopt.snsshop.net.access.log;
+    location / {
+            rewrite ^/(.*)$ /qr/$1 last;
+    }
+    location /qr {
+            proxy_pass http://gate-go/qr;
+            proxy_redirect off ;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+}
+
+
+server {
+    listen 80;
+    server_name pay.testmopt.snsshop.net;
+    access_log logs/pay.testmopt.snsshop.net.access.log;
+    error_log logs/pay.testmopt.snsshop.net.error.log;
+
+    location /api {
+            proxy_pass http://gate-go;
+            proxy_redirect off;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+#
+server {
+    listen 80;
+    server_name appdt.testmopt.snsshop.net;
+    access_log logs/appdt.testmopt.snsshop.net.access.log;
+    error_log logs/appdt.testmopt.snsshop.net.error.log;
+
+    location /api {
+            proxy_pass http://gate-appdt;
+            proxy_redirect off;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 80;
+    server_name appmc.testmopt.snsshop.net;
+    access_log logs/appmc.testmopt.snsshop.net.access.log;
+    error_log logs/appmc.testmopt.snsshop.net.error.log;
+
+    location /api {
+            proxy_pass http://gate-appmc;
+            proxy_redirect off;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 80;
+    server_name merc.testmopt.snsshop.net;
+    access_log logs/merc.testmopt.snsshop.net.access.log;
+    error_log logs/merc.testmopt.snsshop.net.error.log;
+
+    location /api {
+            proxy_pass http://gate-merc;
+            proxy_redirect off;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+

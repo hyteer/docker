@@ -27,9 +27,9 @@ function deploy_service_shopping_cart() {
         fi
     done
     # 启动服务
-    echo "启动服务..."
-    ${PHP} start.php start -d
-    ${PHP} start.php status
+    #echo "启动服务..."
+    #${PHP} start.php start -d
+    #${PHP} start.php status
 } 
 
 
@@ -79,7 +79,7 @@ function deploy_service_third_party_interface () {
     done
 }
 
-function service_user () {
+function deploy_service_user () {
     echo "==部署service-user=="
     cd ${WEB_PATH}/service-user
     ${PHP} init --env=Test --overwrite=All
@@ -106,7 +106,7 @@ function service_user () {
 deploy_service_shopping_cart
 deploy_service_third_party
 deploy_service_third_party_interface
-service_user
+deploy_service_user
 
 
 echo "部署完成..."

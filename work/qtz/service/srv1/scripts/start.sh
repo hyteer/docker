@@ -19,34 +19,42 @@ function start_services () {
 	echo "启动service-base..."
 	cd ${WEB_PATH}/service-base
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service-merchant
 	echo "启动service-merchant..."
 	cd ${WEB_PATH}/service-merchant
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service_message
 	echo "启动service_message..."
 	cd ${WEB_PATH}/service-message
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service_order
 	echo "启动service_order..."
 	cd ${WEB_PATH}/service-order
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service_pay
 	echo "启动service_pay..."
 	cd ${WEB_PATH}/service-pay
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service_product
 	echo "启动service_product..."
 	cd ${WEB_PATH}/service-product
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service_qrcode
 	echo "启动service_qrcode..."
 	cd ${WEB_PATH}/service-qrcode
 	${PHP} start.php start -d
+	${PHP} start.php status
 	# service_shop
 	echo "启动service_shop..."
 	cd ${WEB_PATH}/service-shop
 	${PHP} start.php start -d
+	${PHP} start.php status
 
 }
 

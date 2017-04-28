@@ -1,0 +1,26 @@
+version: '2'
+services:
+  nginx:
+    image: "opt/nginx"
+    env_file:
+      - ./env_files/common.env
+    ports:
+      - "80:80"
+    networks:
+      - opt-debug
+    depends_on:
+      - gate-go
+  gate-go:
+    image: "opt/gate-go"
+    env_file:
+      - ./env_files/common.env
+    networks:
+      - opt-debug
+
+networks:
+  opt-debug:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.100.0.0/16
+

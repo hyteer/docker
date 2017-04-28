@@ -23,7 +23,7 @@ function deploy_gateway_qrcode() {
     cd gateway-qrcode
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -37,9 +37,9 @@ function deploy_gateway_qrcode() {
         fi
     done
     # 启动服务
-    echo "启动服务..."
-    ${PHP_PATH}/bin/php start.php start -d
-    ${PHP_PATH}/bin/php start.php status
+    #echo "启动服务..."
+    #${PHP_PATH}/bin/php start.php start -d
+    #${PHP_PATH}/bin/php start.php status
 } 
 
 
@@ -48,7 +48,7 @@ function deploy_gateway_apps_salesman() {
     cd ${WEB_PATH}/gateway-app-salesman
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -68,7 +68,7 @@ function deploy_gateway_apps_merchant() {
     cd ${WEB_PATH}/gateway-app-merchant
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -87,7 +87,7 @@ function deploy_gateway_boss() {
     echo "==部署boss关=="
     cd ${WEB_PATH}/gateway-boss
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -106,7 +106,7 @@ function deploy_gateway_h5_rest_shop() {
     echo "==部署gateway-h5-rest-shop=="
     cd ${WEB_PATH}/gateway-h5-rest-shop
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -125,7 +125,7 @@ function deploy_gateway_h5_pay() {
     echo "==部署gateway-h5-pay=="
     cd ${WEB_PATH}/gateway-h5-pay
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -144,7 +144,7 @@ function deploy_gateway_h5_ucenter() {
     echo "==部署gateway-h5-ucenter=="
     cd ${WEB_PATH}/gateway-h5-ucenter
     ${PHP_PATH}/bin/php init --env=Test --overwrite=All
-    mkdir ./runtime/debug && mkdir ./runtime/logs
+    mkdir -p ./runtime/debug && mkdir ./runtime/logs
     chown -R nginx:nginx ./runtime
     # 生成thrift code
     echo "生成thrift code..."
@@ -174,6 +174,7 @@ function deploy_gateway_go() {
 
 make_soft_link
 deploy_gateway_qrcode
+deploy_gateway_apps_merchant
 deploy_gateway_apps_salesman
 deploy_gateway_boss
 deploy_gateway_h5_rest_shop

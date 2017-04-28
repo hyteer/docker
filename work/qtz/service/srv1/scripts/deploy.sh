@@ -30,9 +30,9 @@ function deploy_service_base() {
         fi
     done
     # 启动服务
-    echo "启动服务..."
-    ${PHP} start.php start -d
-    ${PHP} start.php status
+    #echo "启动服务..."
+    #${PHP} start.php start -d
+    #${PHP} start.php status
 } 
 
 

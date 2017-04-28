@@ -1,0 +1,15 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "srv-base",
+  "server": true,
+"services": [
+        {
+                "id": "Base0",
+                "name": "Base",
+                "tags": ["Test"],
+                "port": 9091
+        }
+]
+} 

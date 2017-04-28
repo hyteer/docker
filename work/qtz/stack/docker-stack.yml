@@ -10,8 +10,8 @@ services:
         image: "sctek:5000/qtz-srv1"
         networks:
             - qtzstack
-        depends_on:
-            - gateway
+        #depends_on:
+        #    - gateway
     srv2:
         image: "sctek:5000/qtz-srv2"
         networks:

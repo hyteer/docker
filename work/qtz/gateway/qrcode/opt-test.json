@@ -1,0 +1,15 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "qrcode",
+  "server": true,
+"services": [
+        {
+                "id": "Qrcode0",
+                "name": "Qrcode",
+                "tags": ["Test"],
+                "port": 9097
+        }
+]
+}
