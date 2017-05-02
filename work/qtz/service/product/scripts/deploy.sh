@@ -16,8 +16,8 @@ function deploy_service() {
     ${PHP} init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php
     sed -i 's/mysql:host=10.100.100.71;/mysql:host=10.20.60.3;/g' config/main-local.php
-    sed -i "s/'username' => 'prime_base',/'username' => 'root',/g" config/main-local.php
-    sed -i "s/'password' => '231DH9i7iUIUtgTR',/'password' => '111',/g" config/main-local.php
+    sed -i "s/'username' => 'prime_product',/'username' => 'root',/g" config/main-local.php
+    sed -i "s/'password' => 'dpGRlwjcTcAOv1BC',/'password' => '111',/g" config/main-local.php
     mkdir -p ./runtime/debug ./runtime/info
     chown -R nginx:nginx ./runtime
     # 生成thrift code
