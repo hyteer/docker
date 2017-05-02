@@ -3,7 +3,6 @@ MANAGER="gate-go"
 IP_RANGE="192.11.0.0/16"
 IP_PREFIX="192.11.0."
 NET_NAME="testnet"
-WAIT="./scripts/wait-for-it.sh"
 
 
 echo "start..."
@@ -13,18 +12,9 @@ function up () {
 	echo "创建网络..."
 	docker network create -d overlay --subnet=${IP_RANGE} ${NET_NAME}
 	echo "启动gate-go服务..." 
-	docker service create -e MANAGER=${MANAGER} -e IP_PREFIX=${IP_PREFIX} --network ${NET_NAME} --name gate-go -p 8080:8080 opt/gate-go
-	echo "启动gate-appdt服务..." 
-	docker service create -e MANAGER=${MANAGER} -e IP_PREFIX=${IP_PREFIX} --network ${NET_NAME} --name gate-appdt opt/gate-appdt
-	echo "启动gate-appmc服务..." 
-	docker service create -e MANAGER=${MANAGER} -e IP_PREFIX=${IP_PREFIX} --network ${NET_NAME} --name gate-appmc opt/gate-appmc
-	echo "启动gate-merc服务..." 
-	docker service create -e MANAGER=${MANAGER} -e IP_PREFIX=${IP_PREFIX} --network ${NET_NAME} --name gate-merc opt/gate-merc
 
-	${WAIT} gate-go:8301 -t 30 -- echo  "wait gate-go..."
-	${WAIT} gate-appdt:8301 -t 30 -- echo  "wait gate-appdt..."
-	${WAIT} gate-appmc:8301 -t 30 -- echo  "wait gate-appmc..."
-	${WAIT} gate-merc:8301 -t 30 -- echo  "wait gate-merc..."
+	docker service create -e MANAGER=${MANAGER} -e IP_PREFIX=${IP_PREFIX} --network ${NET_NAME} --name gate-go -p 8080:8080 opt/gate-go
+
 	echo "启动nginx服务..." 
 	sleep 3
 
@@ -38,9 +28,6 @@ function down () {
 	echo "删除服务..."
 	docker service rm nginx
 	docker service rm gate-go
-	docker service rm gate-appdt
-	docker service rm gate-appmc
-	docker service rm gate-merc
 	echo "删除网络..."
 	docker network rm ${NET_NAME}
 	echo "已删除..."

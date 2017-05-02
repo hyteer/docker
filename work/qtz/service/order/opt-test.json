@@ -1,0 +1,15 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "srv-order",
+  "server": true,
+  "services": [
+          {
+                "id": "Order0",
+                "name": "Order",
+                "tags": ["Test"],
+                "port": 9094
+          }
+  ]
+} 

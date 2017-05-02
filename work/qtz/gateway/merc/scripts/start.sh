@@ -4,11 +4,12 @@ WEB_PATH="/data/www"
 PHP_PATH="${PHP_PATH}"
 PHP="${PHP_PATH}/bin/php"
 CONSUL="/usr/local/sbin/consul"
-MANAGER="nginx"
+#MANAGER="gate_go"
+#IP_PREFIX="192.11.0."
 
-export IP=$(ifconfig |grep "192.17.0."|cut -d ":" -f2|cut -d " " -f1)
+echo "IP prefix: $IP_PREFIX"
+export IP=$(ifconfig |grep ${IP_PREFIX}|cut -d ":" -f2|cut -d " " -f1)
 echo "IP: ${IP}"
-
 ## start php
 echo "启动php-fpm..."
 /etc/init.d/php-fpm start

@@ -4,7 +4,10 @@ WEB_PATH="/data/www"
 PHP_PATH="${PHP_PATH}"
 PHP="${PHP_PATH}/bin/php"
 CONSUL="/usr/local/sbin/consul"
-#MANAGER="nginx"
+WAIT="/scripts/wait-for-it.sh"
+#MANAGER="gate_go"
+#IP_PREFIX="192.11.0."
+SRV_NAME="third-party-interface"
 
 echo "IP prefix: $IP_PREFIX"
 export IP=$(ifconfig |grep ${IP_PREFIX}|cut -d ":" -f2|cut -d " " -f1)
@@ -16,20 +19,21 @@ echo "启动php-fpm..."
 # start consul
 echo "启动consul..."
 nohup consul agent -bind ${IP} -server -bootstrap-expect 3 -data-dir /tmp/consul -config-dir /etc/consul.d &
-# start gate
-function start_gateway () {
 
-    echo "启动gateway-app-salesman..."
-    cd ${WEB_PATH}/gateway-app-salesman
-    ${PHP} start.php start -d
-    ${PHP} start.php status
+echo "启动服务..."
+function start_service () {
+	# service-base
+	echo "启动service-${SRV_NAME}..."
+	cd ${WEB_PATH}/service-${SRV_NAME}
+	${PHP} start.php start -d
+	${PHP} start.php status
+
 }
 
-start_gateway
+start_service
+${WAIT} ${MANAGER}:8301 -t 30 -- echo "wait manager..."
 ${CONSUL} join ${MANAGER}
 ${CONSUL} members
 ${CONSUL} monitor
-
-#/usr/local/sbin/consul monitor
 
 

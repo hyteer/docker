@@ -1,0 +1,15 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "srv-third-party-interface",
+  "server": true,
+  "services": [
+          {
+                "id": "ThirdPartyInterface0",
+                "name": "ThirdPartyInterface",
+                "tags": ["Test"],
+                "port": 9103
+         }
+  ]
+} 

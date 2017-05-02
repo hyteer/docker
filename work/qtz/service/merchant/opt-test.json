@@ -1,0 +1,15 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "srv-merchant",
+  "server": true,
+  "services": [
+          {
+                "id": "Merchant0",
+                "name": "Merchant",
+                "tags": ["Test"],
+                "port": 9092
+          }
+  ]
+} 

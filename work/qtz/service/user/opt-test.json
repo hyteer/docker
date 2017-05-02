@@ -1,0 +1,15 @@
+{
+  "datacenter": "opt-test",
+  "data_dir": "/tmp/consul",
+  "log_level": "INFO",
+  "node_name": "srv-user",
+  "server": true,
+  "services": [
+          {
+                "id": "Users0",
+                "name": "Users",
+                "tags": ["Test"],
+                "port": 9104
+          }
+  ]
+} 
