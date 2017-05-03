@@ -11,7 +11,7 @@ SRV_NAME="third-party-interface"
 cp /scripts/ping /bin/
 
 function deploy_service() {
-    echo "==部署service-qrcode=="
+    echo "==部署service-${SRV_NAME}=="
     cd ${WEB_PATH}/service-${SRV_NAME}
     ${PHP} init --env=Test --overwrite=All
     sed -i "s/'hostname' => '10.100.100.70'/'hostname' => '${REDIS}'/g" config/main-local.php

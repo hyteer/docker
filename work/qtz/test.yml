@@ -1,0 +1,26 @@
+version: '3'
+services:
+  nginx:
+    image: "sctek:5000/opt/nginx"
+    env_file:
+      - ./env_files/common.env
+    ports:
+      - "80:80"
+    networks:
+      - opt-debug
+    depends_on:
+      - gate-go
+    command: /scripts/wait-for-it.sh gate-go:8301 -- /scripts/start.sh
+  gate-go:
+    image: "sctek:5000/opt/gate-go"
+    env_file:
+      - ./env_files/common.env
+    networks:
+      - opt-debug
+
+networks:
+  opt-debug:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.100.0.0/24

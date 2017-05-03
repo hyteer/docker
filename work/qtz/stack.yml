@@ -1,32 +1,26 @@
 version: '3'
 services:
-    gateway:
-        image: "qtz/gateway"
-        ports:
-            - "80:80"
-        networks:
-            - qtz
-    srv1:
-        image: "qtz-c/srv1"
-        networks:
-            - qtz
-        depends_on:
-            - gateway
-    srv2:
-        image: "qtz-c/srv2"
-        networks:
-            - qtz
-        depends_on:
-            - gateway
-#    redis:
-#        image: qtz/
-#        ports:
-#            - "6379:6379"
-#        command: ['mysqld', '--character-set-server=utf8']
-#        networks:
-#            - qtz
-#volumes:
-#    mysql-data:
+  nginx:
+    image: "sctek:5000/opt/nginx"
+    env_file:
+      - ./env_files/common.env
+    ports:
+      - "80:80"
+    networks:
+      - opt-debug
+    depends_on:
+      - gate-go
+    command: /scripts/wait-for-it.sh gate-go:8301 -- /scripts/start.sh
+  gate-go:
+    image: "sctek:5000/opt/gate-go"
+    env_file:
+      - ./env_files/common.env
+    networks:
+      - opt-debug
 
 networks:
-    qtz:
+  opt-debug:
+    ipam:
+      driver: overlay
+      config:
+        - subnet: 10.11.0.0/24
