@@ -1,0 +1,29 @@
+version: '2'
+services:
+  registry-srv:
+    restart: always
+    image: registry:2
+    ports:
+      - 5000:5000
+    volumes:
+      - ~/.data/registry:/var/lib/registry
+    networks:
+      - registry-net
+  registry-web:
+    image: hyper/docker-registry-web
+    ports:
+      - 8080:8080
+    depends_on:
+      - registry-srv
+    environment:
+      - REGISTRY_URL=http://registry-srv:5000/v2
+      - REGISTRY_NAME=localhost:5000
+    networks:
+      - registry-net
+networks:
+  registry-net:
+
+
+
+
+
