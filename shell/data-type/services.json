@@ -1,0 +1,6 @@
+[
+{"srvName":"Base", "repos": "service-base"},
+{"srvName":"Qrcode", "repos": "service-qrcode"},
+{"srvName":"Pay", "repos": "service-pay"},
+{"srvName":"Product", "repos": "service-product"}
+]
